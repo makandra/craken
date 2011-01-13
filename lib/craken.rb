@@ -24,14 +24,16 @@ module Craken
   # see here: http://unixhelp.ed.ac.uk/CGI/man-cgi?crontab+5
   SPECIAL_STRINGS   = %w[@reboot @yearly @annually @monthly @weekly @daily @midnight @hourly]
 
+  CRONTAB_MARKER_START = "### #{APP_NAME} #{RAKETAB_RAILS_ENV} raketab start"
+  CRONTAB_MARKER_END = "### #{APP_NAME} #{RAKETAB_RAILS_ENV} raketab end"
   # strip out the existing raketab cron tasks for this project
   def load_and_strip
     crontab = ''
     old = false
     `#{CRONTAB_EXE} -l`.each_line do |line|
       line.strip!
-      if old || line == "### #{APP_NAME} raketab"
-        old = line != "### #{APP_NAME} raketab end"
+      if old || line == CRONTAB_MARKER_START
+        old = line != CRONTAB_MARKER_END
       else
         crontab << line
         crontab << "\n"
@@ -41,7 +43,7 @@ module Craken
   end
 
   def append_tasks(crontab, raketab)
-    crontab << "### #{APP_NAME} raketab\n"
+    crontab << "#{CRONTAB_MARKER_START}\n"
     raketab.each_line do |line|
       line.strip!
       unless line =~ /^#/ || line.empty? # ignore comments and blank lines
@@ -60,7 +62,7 @@ module Craken
         crontab << "\n"
       end
     end
-    crontab << "### #{APP_NAME} raketab end\n"
+    crontab << "#{CRONTAB_MARKER_END}\n"
     crontab
   end
 

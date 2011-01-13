@@ -1,4 +1,4 @@
-require "#{File.dirname(__FILE__)}/../lib/craken"
+require "#{File.dirname(__FILE__)}/../craken"
 
 namespace :craken do
 
