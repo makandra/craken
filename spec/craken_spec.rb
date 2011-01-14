@@ -1,6 +1,7 @@
 RAILS_ROOT = "foo/bar/baz"
 RAILS_ENV = "test"
 ENV['app_name'] = "craken_test"
+ENV['raketab_rails_env'] = "test"
 
 require File.dirname(__FILE__) + "/../lib/craken"
 require 'fileutils'
@@ -21,10 +22,10 @@ describe Craken do
     it "should strip out preinstalled raketab commands associated with the project" do
 
 crontab = <<EOS
-### craken_test raketab
+### craken_test test raketab start
 this is a test
 one more line
-### craken_test raketab end
+### craken_test test raketab end
 EOS
 
       self.should_receive(:`).with(/crontab -l/).and_return(crontab)
@@ -35,10 +36,10 @@ EOS
 
 crontab = <<EOS
 1 2 3 4 5 blah blah
-### craken_test raketab
+### craken_test test raketab start
 this is a test
 one more line
-### craken_test raketab end
+### craken_test test raketab end
 6 7 8 9 10 foo bar
 EOS
 
@@ -55,8 +56,8 @@ EOS
     it "should add comments to the beginning and end of the rake tasks it adds to crontab" do
       raketab = "0 1 0 0 0 foo:bar"
       cron = append_tasks(@crontab, raketab)
-      cron.should match(/### craken_test raketab\n0 1 0 0 0 /)
-      cron.should match(/### craken_test raketab end\n$/)
+      cron.should match(/### craken_test test raketab start\n0 1 0 0 0 /)
+      cron.should match(/### craken_test test raketab end\n$/)
     end
 
     it "should ignore comments in the raketab string" do
