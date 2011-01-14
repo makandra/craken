@@ -2,6 +2,7 @@ RAILS_ROOT = "foo/bar/baz"
 RAILS_ENV = "test"
 ENV['app_name'] = "craken_test"
 ENV['raketab_rails_env'] = "test"
+ENV['rake_exe'] = '/usr/bin/bundle exec rake'
 
 require File.dirname(__FILE__) + "/../lib/craken"
 require 'fileutils'
@@ -107,6 +108,12 @@ EOS
       raketab = "0 1 0 0 0 foo:bar"
       cron = append_tasks(@crontab, raketab)
       cron.should match(/0 1 0 0 0 cd #{Craken::DEPLOY_PATH} && #{Craken::RAKE_EXE} --silent RAILS_ENV=#{Craken::RAKETAB_RAILS_ENV} foo:bar/)
+    end
+    
+    it "should use the rake command given via ENV['rake_exe']" do
+      raketab = "0 1 0 0 0 foo:bar"
+      cron = append_tasks(@crontab, raketab)
+      cron.should include('/usr/bin/bundle exec rake')
     end
 
     it "should ignore additional data at the end of the configuration" do
