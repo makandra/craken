@@ -10,7 +10,7 @@ namespace :craken do
       files = (plural = RAKETAB_FILES.size > 1) ? RAKETAB_FILES.join(", ") : RAKETAB_FILES.first
       puts "craken:install => Using raketab file#{plural ? 's' : ''} #{files}" 
       crontab = append_tasks(load_and_strip, raketab)
-      install crontab
+      Craken::install crontab
     end
   end
 
@@ -18,7 +18,7 @@ namespace :craken do
   task :uninstall do
     include Craken
     # install stripped cron
-    install load_and_strip
+    Craken::install load_and_strip
   end
 
 end
