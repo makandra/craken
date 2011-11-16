@@ -67,7 +67,7 @@ module Craken
   end
 
   # install new crontab
-  def install(crontab)
+  def craken_install(crontab)
     filename = ".crontab#{rand(9999)}" 
     File.open(filename, 'w') { |f| f.write crontab }
     `#{CRONTAB_EXE} #{filename}`
